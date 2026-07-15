@@ -1,7 +1,7 @@
 ---
 import { ClientRouter } from "astro:transitions"
 import { getActivePinia } from "../store/pinia"
-
+import '@styles/index.css'
 const pinia = await getActivePinia()
 const statePinia = JSON.stringify(pinia.state.value)
 ---
