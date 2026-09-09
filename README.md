@@ -41,3 +41,15 @@ All commands are run from the root of the project, from a terminal:
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+
+## Working example: query params with `navigate()` + `history: 'replace'`
+
+`src/pages/usePushState.astro` reproduces https://github.com/withastro/astro/issues/17882 and shows three ways to change the URL's query params:
+
+| Button | Code | Result |
+| --- | --- | --- |
+| **Default push state** | `history.pushState(null, '', '?testvalue=true')` | ❌ Breaks back navigation: after navigating to `/returnPage/` and pressing Back, the URL changes but the page content does not (see #17882). |
+| **Fix push state** | `pushUrlState(url)` — passes `{ index, scrollX, scrollY }` state | ✅ Keeps the history entry router-managed, so Back works. |
+| **navigate() with history: 'replace'** | `navigate('?testvalue=true', { history: 'replace' })` | ✅ Supported way: query param is swapped via a client-side view transition — **no full page reload** — and history stays consistent. |
+
+Direct `history.pushState` is not part of Astro's supported API; the supported programmatic navigation is [`navigate()`](https://docs.astro.build/en/reference/modules/astro-transitions/#navigate), which is built on the History API and handles URL/query-param changes without reloading the page. If you must call `history.pushState`/`replaceState` yourself, pass a state object (e.g. `history.state`) instead of `null` so the entry stays router-managed.
